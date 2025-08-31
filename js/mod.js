@@ -38,11 +38,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.263",
+	num: "1.275",
 	name: "The Parallel Multiverse"
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v1.275 - 2025/8/31</h3><br>
+		- Added 12 milestones<br>
 	<h3>v1.263 - 2024/6/8</h3><br>
 		- Added 18 milestones<br>
 		- Added a Reincarnation Challenge<br>
