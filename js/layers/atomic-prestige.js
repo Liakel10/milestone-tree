@@ -42,7 +42,10 @@ addLayer("ap", {
 		return m;
     },
     row: 4, // Row the layer is in on the tree (0 is the first row)
-	exponent: 0.005,
+	exponent(){
+		if(player.r.stage>=2)return 2e-3;
+		return 5e-3;
+	},
     hotkeys: [
         {key: "a", description: "A: Reset for atomic-prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
@@ -51,8 +54,12 @@ addLayer("ap", {
 		if(player.r.stage>=1)return ["se","hp"];
 		return ["hp"]
 	},
-	softcap:new Decimal(Infinity),
-	softcapPower:new Decimal(1),
+	softcap(){
+		return getPointHardcapStart();
+	},
+	softcapPower(){
+		return new Decimal(0);
+	},
 	
 	upgrades: {
         rows: 4,
@@ -133,6 +140,8 @@ addLayer("ap", {
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=new Decimal(1.4);
 				if(player.m.effective.gte(262))base=new Decimal("1e100");//1e100
+				if(player.m.effective.gte(267))base=new Decimal("1e500");//1e500
+				if(player.m.effective.gte(272))base=new Decimal("1e2500");//1e2500
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.add(1)).pow(0.9).add(1))
 				return ret;
             },
@@ -182,6 +191,7 @@ addLayer("ap", {
 				if(hasUpgrade("ap",41))p=p.mul(1.2);
 				if(hasUpgrade("ap",42))p=p.mul(1.2369791666666666666666666666667);
 				if(hasUpgrade("ap",43))p=p.mul(1.2307692307692307692307692307692);
+				if(hasUpgrade("ap",44))p=p.mul(1.3);
 				return p.add(1);
             },
             effectDisplay() { return format(this.effect(),4)+"x later" },
@@ -225,6 +235,15 @@ addLayer("ap", {
 			},
             unlocked() { return player.m.effective.gte(231)}, // The upgrade is only visible when this is true
         },
+		44: {
+			title: "Atomic-Prestige Upgrade 44",
+            description: "Atomic-Prestige Upgrade 32 is better. You can buy this upgrade while you're in T challenge 8.",
+            cost(){
+				if(player.t.activeChallenge!=42)return new Decimal(Infinity);
+				return new Decimal("e42e32");
+			},
+            unlocked() { return player.m.effective.gte(231)}, // The upgrade is only visible when this is true
+        },
 	},
 	
 	challenges: {
@@ -250,6 +269,7 @@ addLayer("ap", {
 				if(player.m.effective.gte(130))a-=0.02,c-=4e5;
 				if(player.m.effective.gte(168))a-=0.02;
 				if(player.m.effective.gte(193)&&player.r.stage>=1)a-=0.03;
+				if(player.um.points.gte(120))a-=0.01;
 				
 				let p=player.points;
 				
@@ -264,6 +284,7 @@ addLayer("ap", {
 				if(player.m.effective.gte(130))a-=0.02,c-=4e5;
 				if(player.m.effective.gte(168))a-=0.02;
 				if(player.m.effective.gte(193)&&player.r.stage>=1)a-=0.03;
+				if(player.um.points.gte(120))a-=0.01;
 				
 				return Decimal.pow(10,Decimal.pow(a,Decimal.pow(x,new Decimal(b).div(buyableEffect('ap', 12)))).mul(c));
 		},
@@ -295,6 +316,7 @@ addLayer("ap", {
 						if(player.m.effective.gte(196)&&player.r.stage>=1)ret=1.1+comp*0.03;
 						if(player.m.effective.gte(197)&&player.r.stage>=1)ret=1.075+comp*0.035;
 						if(player.m.effective.gte(198)&&player.r.stage>=1)ret=1.05+comp*0.04;
+						if(player.um.points.gte(122))ret=1.045+comp*0.041;
 					}
                     return ret;
                 },
@@ -308,6 +330,7 @@ addLayer("ap", {
 				if(player.m.effective.gte(152))a-=0.01,c-=5e5;
 				if(player.m.effective.gte(168))a-=0.02;
 				if(player.m.effective.gte(193)&&player.r.stage>=1)a-=0.03;
+				if(player.um.points.gte(120))a-=0.01;
 				
 				let p=player.points;
 				
@@ -323,6 +346,7 @@ addLayer("ap", {
 				if(player.m.effective.gte(152))a-=0.01,c-=5e5;
 				if(player.m.effective.gte(168))a-=0.02;
 				if(player.m.effective.gte(193)&&player.r.stage>=1)a-=0.03;
+				if(player.um.points.gte(120))a-=0.01;
 				
 				return Decimal.pow(10,Decimal.pow(a,Decimal.pow(x,new Decimal(b).div(buyableEffect('ap', 12)))).mul(c));
 		},
@@ -352,6 +376,7 @@ addLayer("ap", {
 				if(player.m.effective.gte(152))b-=0.04;
 				if(player.m.effective.gte(168))a-=0.02;
 				if(player.m.effective.gte(193)&&player.r.stage>=1)a-=0.03;
+				if(player.um.points.gte(120))a-=0.01;
 				
 				let p=player.points;
 				
@@ -367,6 +392,7 @@ addLayer("ap", {
 				if(player.m.effective.gte(152))b-=0.04;
 				if(player.m.effective.gte(168))a-=0.02;
 				if(player.m.effective.gte(193)&&player.r.stage>=1)a-=0.03;
+				if(player.um.points.gte(120))a-=0.01;
 				return Decimal.pow(10,Decimal.pow(a,Decimal.pow(x,new Decimal(b).div(buyableEffect('ap', 12)))).mul(c));
 			},
 			canComplete(){
@@ -391,6 +417,9 @@ addLayer("ap", {
                 currencyInternalName: "points",
                 rewardDescription() { return "3rd milestone's effect is better, again." },
 		completionsAfter120(){
+			if(player.m.effective.gte(274)){
+				return scaleAPChall1(player.points.add(10).log10().div(500).mul(buyableEffect('ap', 12)).log(1.03)).toNumber();
+			}
 			if(player.m.effective.gte(245)){
 				return scaleAPChall1(player.points.add(10).log10().div(500).mul(buyableEffect('ap', 12)).log(1.035)).toNumber();
 			}
@@ -402,6 +431,9 @@ addLayer("ap", {
 		},
 		goalAfter120(x=player.ap.challenges[22]){
 				x=scaleAPChall2(x);
+			if(player.m.effective.gte(274)){
+				return Decimal.pow(10,Decimal.pow(1.03,x).mul(500).div(buyableEffect('ap', 12)));
+			}
 			if(player.m.effective.gte(245)){
 				return Decimal.pow(10,Decimal.pow(1.035,x).mul(500).div(buyableEffect('ap', 12)));
 			}
@@ -496,6 +528,7 @@ addLayer("ap", {
 			if(player.m.effective.gte(237))b-=0.005;
 			if(player.m.effective.gte(249))b-=0.01;
 			if(player.m.effective.gte(261))b-=player.m.points.sub(260).div(1000).min(0.1).toNumber();
+			if(player.m.effective.gte(273))b-=0.01;
 			
 			let p=player.points;
 			
@@ -521,6 +554,7 @@ addLayer("ap", {
 			if(player.m.effective.gte(237))b-=0.005;
 			if(player.m.effective.gte(249))b-=0.01;
 			if(player.m.effective.gte(261))b-=player.m.points.sub(260).div(1000).min(0.1).toNumber();
+			if(player.m.effective.gte(273))b-=0.01;
 			return Decimal.pow(10,Decimal.pow(a,Decimal.pow(x,new Decimal(b).div(buyableEffect('ap', 12)))).mul(c));
 		},
 		canComplete(){
@@ -625,6 +659,7 @@ addLayer("ap", {
 			if(player.um.points.gte(103)){
 				let keep=3;
 				if(player.um.points.gte(108))keep=6;
+				if(player.um.points.gte(114))keep=10;
 				player.ap.challenges[11]=Math.max(player.ap.challenges[11],keep);
 				player.ap.challenges[12]=Math.max(player.ap.challenges[12],keep);
 				player.ap.challenges[21]=Math.max(player.ap.challenges[21],keep);
@@ -667,6 +702,8 @@ addLayer("ap", {
 			}
 			if(player.m.effective.gte(157)&&player.r.activeChallenge==11){
 				player.ap.challenges[22]=Math.max(player.ap.challenges[22],layers.ap.challenges[22].completionsAfter120());
+			}else if(player.m.effective.gte(274)){
+				player.ap.challenges[22]=Math.max(player.ap.challenges[22],getPointGenBeforeSoftcap().add(1e100).log10().pow(player.m.points).add(10).mul(player.m.points).log10().div(500).mul(buyableEffect('ap', 12)).log(1.03).toNumber());
 			}else if(player.m.effective.gte(245)){
 				player.ap.challenges[22]=Math.max(player.ap.challenges[22],getPointGenBeforeSoftcap().add(1e100).log10().pow(player.m.points).add(10).mul(player.m.points).log10().div(500).mul(buyableEffect('ap', 12)).log(1.035).toNumber());
 			}else if(player.m.effective.gte(161)){

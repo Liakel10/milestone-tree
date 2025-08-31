@@ -32,14 +32,20 @@ addLayer("hp", {
         return mult
     },
     row: 3, // Row the layer is in on the tree (0 is the first row)
-	exponent: 0.001,
+	exponent(){
+		return 1e-3;
+	},
     hotkeys: [
         {key: "h", description: "H: Reset for hyper-prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return player.m.effective.gte(60) && player.r.universe==0},
 	branches: ["sp"],
-	softcap:new Decimal(Infinity),
-	softcapPower:new Decimal(1),
+	softcap(){
+		return getPointHardcapStart();
+	},
+	softcapPower(){
+		return new Decimal(0);
+	},
 	
 	upgrades: {
         rows: 4,

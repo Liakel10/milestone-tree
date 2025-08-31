@@ -40,7 +40,10 @@ addLayer("sp", {
         return mult
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
-	exponent: 0.1,
+	exponent(){
+		if(player.r.stage>=2)return 1e-3;
+		return 0.1;
+	},
     hotkeys: [
         {key: "s", description: "S: Reset for super-prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
@@ -157,6 +160,7 @@ addLayer("sp", {
             unlocked() { return player.m.effective.gte(35)}, // The upgrade is only visible when this is true
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=1.3;
+				if(player.m.effective.gte(266))base+=4.1;//5.4
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.add(1)).pow(0.9).add(1))
                 return ret;
             },
@@ -169,6 +173,7 @@ addLayer("sp", {
             unlocked() { return player.m.effective.gte(35)}, // The upgrade is only visible when this is true
 			effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
 				let base=1.1;
+				if(player.m.effective.gte(266))base+=2.5;//3.6
                 let ret = Decimal.pow(base,Decimal.log10(player[this.layer].points.add(1)).pow(0.9).add(1))
                 return ret;
             },
@@ -189,7 +194,7 @@ addLayer("sp", {
 		31: {
 			title: "Super-Prestige Upgrade 31",
             description: "Milestone Cost Scaling is weaker based on your super-prestige points.",
-            cost: new Decimal("1e6864"),
+            cost: new Decimal("1e6860"),
 			effect(){
 				let p=player.sp.points.add(1e20).log10().log10().div(65);
 				if(hasUpgrade("sp",32))p=p.mul(2);
@@ -208,26 +213,26 @@ addLayer("sp", {
 		32: {
 			title: "Super-Prestige Upgrade 32",
             description: "Super-Prestige Upgrade 31 is boosted.",
-            cost: new Decimal("1e9617"),
+            cost: new Decimal("1e9610"),
             unlocked() { return player.m.effective.gte(55)}, // The upgrade is only visible when this is true
         },
 		33: {
 			title: "Super-Prestige Upgrade 33",
             description: "Super-Prestige Upgrade 31 is boosted.",
-            cost: new Decimal("1e13713"),
+            cost: new Decimal("1e13710"),
             unlocked() { return player.m.effective.gte(55)}, // The upgrade is only visible when this is true
         },
 		34: {
 			title: "Super-Prestige Upgrade 34",
             description: "Super-Prestige Upgrade 31 is boosted.",
-            cost: new Decimal("1e13839"),
+            cost: new Decimal("1e13830"),
             unlocked() { return player.m.effective.gte(55)}, // The upgrade is only visible when this is true
         },
 		41: {
 			title: "Super-Prestige Upgrade 41",
             description: "Same as Super-Prestige Upgrade 24. To buy this upgrade, You need to complete AP challenge 2 15 times.",
             cost(){
-				if(player.ap.challenges[12]<15)return new Decimal(Infinity);
+				if(player.ap.challenges[12]<15 && !player.um.points.gte(127))return new Decimal(Infinity);
 				return new Decimal("e447e8");
 			},
             unlocked() { return player.m.effective.gte(127)}, // The upgrade is only visible when this is true
@@ -236,7 +241,7 @@ addLayer("sp", {
 			title: "Super-Prestige Upgrade 42",
             description: "Same as Super-Prestige Upgrade 24. To buy this upgrade, You need to complete AP challenge 4 21 times.",
             cost(){
-				if(player.ap.challenges[22]<21)return new Decimal(Infinity);
+				if(player.ap.challenges[22]<21 && !player.um.points.gte(127))return new Decimal(Infinity);
 				return new Decimal("e478e8");
 			},
             unlocked() { return player.m.effective.gte(127)}, // The upgrade is only visible when this is true
@@ -245,7 +250,7 @@ addLayer("sp", {
 			title: "Super-Prestige Upgrade 43",
             description: "First Super-Prestige buyable is cheaper. You can buy this upgrade while you're in AP challenge 6.",
             cost(){
-				if(player.ap.activeChallenge!=32)return new Decimal(Infinity);
+				if(player.ap.activeChallenge!=32 && !player.um.points.gte(127))return new Decimal(Infinity);
 				return new Decimal("e4e10");
 			},
             unlocked() { return player.m.effective.gte(127)}, // The upgrade is only visible when this is true
@@ -254,7 +259,7 @@ addLayer("sp", {
 			title: "Super-Prestige Upgrade 44",
             description: "First row of Super-Prestige upgrades is boosted. You can buy this upgrade while you're in T challenge 5.",
             cost(){
-				if(player.t.activeChallenge!=31)return new Decimal(Infinity);
+				if(player.t.activeChallenge!=31 && !player.um.points.gte(127))return new Decimal(Infinity);
 				return new Decimal("e127e5");
 			},
             unlocked() { return player.m.effective.gte(127)}, // The upgrade is only visible when this is true
@@ -343,11 +348,10 @@ addLayer("sp", {
 	},
 	softcap(){
 		if(player.t.activeChallenge==42)return getPointSoftcapStart();
-		return new Decimal(Infinity);
+		return getPointHardcapStart();
 	},
 	softcapPower(){
-		if(player.t.activeChallenge==42)return new Decimal(0);
-		return new Decimal(1);
+		return new Decimal(0);
 	},
 		doReset(l){
 			if(l=="sp"){return;}

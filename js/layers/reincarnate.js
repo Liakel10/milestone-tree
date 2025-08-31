@@ -12,6 +12,7 @@ addLayer("r", {
     }},
     color: "#00FFFF",
     requires1(){
+		if(player.r.stage>=2)return new Decimal(1e10);
 		return Decimal.pow(10,10*Math.sqrt(10));
 	},
     requires(){
@@ -37,7 +38,7 @@ addLayer("r", {
 		if(player.em.points.gte(10))mult=mult.mul(2);
 		if(player.mm.points.gte(45))mult=mult.mul(2);
 		if(hasUpgrade("pp",14))mult=mult.mul(upgradeEffect("pp",14));
-		if (player.ep.buyables[11].gte(9)) mult = mult.mul(tmp.ep.nineEffect);
+		if(player.ep.buyables[11].gte(9)) mult = mult.mul(tmp.ep.nineEffect);
 		if(hasUpgrade("r",12))mult=mult.mul(2);
 		if(hasUpgrade("ep",21))mult=mult.mul(upgradeEffect("ep",21));
 		return mult;
@@ -93,11 +94,42 @@ addLayer("r", {
 	},
 	update(diff){
 		if(player.r.points.gte(layers.r.hardcap))player.r.points=new Decimal(layers.r.hardcap);
-		if(player.r.stage>=1)player.r.power=player.r.power.add(layers.r.powerGain().mul(diff)).min(6.66e55);
+		if(player.r.stage>=1)player.r.power=player.r.power.add(layers.r.powerGain().mul(diff));//.min(6.66e55);
+		if(hasUpgrade("r",14)&&player.r.stage==1){
+			layerDataReset("t",[]);
+			layerDataReset("a",[]);
+			layerDataReset("ap",[]);
+			layerDataReset("he",[]);
+			layerDataReset("hb",[]);
+			layerDataReset("hp",[]);
+			layerDataReset("se",[]);
+			layerDataReset("em",[]);
+			layerDataReset("um",[]);
+			layerDataReset("sp",[]);
+			layerDataReset("pe",[]);
+			layerDataReset("pb",[]);
+			layerDataReset("p",[]);
+			layerDataReset("mm",[]);
+			layerDataReset("pp",[]);
+			layerDataReset("ep",[]);
+			layerDataReset("cp",[]);
+			layerDataReset("mp",[]);
+			layerDataReset("r",["upgrades","points","best","times","unlocked"]);
+			player.points=new Decimal(10);
+			player.r.stage=2;
+			player.r.points=player.r.points.add(2e7);
+			updateTemp();
+			updateTemp();
+			updateTemp();
+			updateTemp();
+			updateTemp();
+			player.r.stage=2;
+		}
 	},
 	powerGain(){
 		let ret=player.points.max(10).log10().sub(1).mul(player.r.points.pow(player.m.effective.gte(215)?1.7+player.m.points.min(220).sub(215).mul(0.06).toNumber():1.5));
 		if(hasUpgrade("r",11))ret = ret.mul(2);
+		if (player.ep.buyables[11].gte(10))ret = ret.mul(tmp.ep.tenEffect);
 		if(sha512_256(localStorage.supporterCode).slice(0,2) == 'b4' && window.supporterCodeInput){return ret.mul(3)}
 		return ret;
 	},
@@ -170,6 +202,18 @@ addLayer("r", {
             cost: new Decimal(1e6),
 			unlocked(){return player.m.effective.gte(234);}
         },
+		13: {
+			title: "Reincarnation Upgrade 13",
+            description(){return "2nd Milestone Scaling starts "+(player.r.stage>=2?10:8.7)+" later."},
+            cost: new Decimal(1e7),
+			unlocked(){return player.r.challenges[11]>=2}
+        },
+		14: {
+			title: "Reincarnation Upgrade 14",
+            description: "",
+            cost: new Decimal(2e7),
+			unlocked(){return false;player.m.effective.gte(275);}
+        },
 	},
 	buyables: {
 		rows: 2,
@@ -231,7 +275,8 @@ addLayer("r", {
                },
 			  effect(){
 				  let x = player[this.layer].buyables[this.id];
-				  if(x.gte(70))return Decimal.pow(1.095,x);
+				  //if(x.gte(140))return x.mul(2350);
+				  if(x.gte(70)&&player.r.stage<=1)return Decimal.pow(1.095,x);
 				  if(x.gte(51))return x.sqrt().mul(Decimal.pow(1.062,x));
 				  return x.add(1).mul(Decimal.pow(1.02,x));
 			  },
@@ -308,11 +353,11 @@ addLayer("r", {
 		cols: 2,
 		11:{
                 name: "Ex-AP Challenge",
-                completionLimit: 1,
-			    challengeDescription() {return "All 6 AP Challenges at once.<br>"+format(challengeCompletions(this.layer, this.id),0)+"/1 completions"},
+                completionLimit: 2,
+			    challengeDescription() {return "All 6 AP Challenges at once.<br>"+format(challengeCompletions(this.layer, this.id),0)+"/2 completions"},
                 unlocked() { return true },
                 goal: function(){
-					return [43.4,Infinity][player.r.challenges[11]];
+					return [43.4,72,Infinity][player.r.challenges[11]];
 				},
 				canComplete(){
 					let c=0;
@@ -322,6 +367,7 @@ addLayer("r", {
 				},
                 currencyDisplayName: "T challenge completions",
                 rewardDescription() { 
+					if(player.r.challenges[this.id]>=2)return "You can upgrade more milestones. Unlock a new Reincarnation Upgrade.";
 					if(player.r.challenges[this.id]>=1)return "You can upgrade more milestones.";
 					return "..."
 				},

@@ -45,7 +45,10 @@ addLayer("hb", {
 	},
 	softcap:new Decimal(Infinity),
 	softcapPower:new Decimal(1),
-	base: new Decimal("1e100000"),
+	base: function(x){
+		if(player.um.points.gte(116))return new Decimal("1e30000")
+		return new Decimal("1e100000")
+	},
 	exponent: function(x){
 		if(x===undefined)x=player.hb.points;
 		let p=new Decimal(1.25);
@@ -53,6 +56,7 @@ addLayer("hb", {
 			let scaling=x.sub(10).pow(2).div(1000);
 			if(player.m.effective.gte(119))scaling=scaling.div(1.2);
 			if(player.um.points.gte(104))scaling=scaling.div(1.01);
+			if(player.um.points.gte(119))scaling=scaling.div(1.01);
 			p=p.add(scaling);
 		}
 		return p;
@@ -160,6 +164,9 @@ addLayer("hb", {
 				if(player.m.effective.gte(252))exp+=0.1;
 				if(player.m.effective.gte(253))exp+=0.1;
 				if(hasUpgrade("hb",41))exp+=0.05;
+				if(hasUpgrade("hb",42))exp+=0.05;
+				if(hasUpgrade("hb",43))exp+=0.05;
+				if(hasUpgrade("hb",44))exp+=0.05;
 				let p=player.a.points.pow(exp);
 				return p;
             },
@@ -193,6 +200,33 @@ addLayer("hb", {
 			},
             unlocked() { return player.m.effective.gte(257)}, // The upgrade is only visible when this is true
         },
+		42: {
+			title: "Hyper Boost Upgrade 42",
+            description: "Atom Upgrade 23 is boosted. You can buy this upgrade while you're in T challenge 3.",
+            cost(){
+				if(player.t.activeChallenge!=21)return new Decimal(Infinity);
+				return new Decimal(142);
+			},
+            unlocked() { return player.m.effective.gte(257)}, // The upgrade is only visible when this is true
+        },
+		43: {
+			title: "Hyper Boost Upgrade 43",
+            description: "Atom Upgrade 23 is boosted. You can buy this upgrade while you're in T challenge 5.",
+            cost(){
+				if(player.t.activeChallenge!=31)return new Decimal(Infinity);
+				return new Decimal(146);
+			},
+            unlocked() { return player.m.effective.gte(257)}, // The upgrade is only visible when this is true
+        },
+		44: {
+			title: "Hyper Boost Upgrade 44",
+            description: "Atom Upgrade 23 is boosted. You can buy this upgrade while you're in T challenge 7.",
+            cost(){
+				if(player.t.activeChallenge!=41)return new Decimal(Infinity);
+				return new Decimal(151);
+			},
+            unlocked() { return player.m.effective.gte(257)}, // The upgrade is only visible when this is true
+        },
 	},
 	resetsNothing(){return player.m.effective.gte(111)},
 		doReset(l){
@@ -204,7 +238,7 @@ addLayer("hb", {
 	update(){
 		if(player.m.effective.gte(116)){//quick autobuy
 			while(true){
-				let req=layers.hb.requires().mul(layers.hb.base.pow(Decimal.pow(player.hb.points,layers.hb.exponent())));
+				let req=layers.hb.requires().mul(layers.hb.base().pow(Decimal.pow(player.hb.points,layers.hb.exponent())));
 				if(player.hp.points.gt(req))player.hb.points=player.hb.points.add(1);
 				else break;
 			}

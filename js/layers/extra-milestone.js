@@ -157,6 +157,14 @@ addLayer("em", {
 				return "7th Exotic-Prestige points effect is better, and +1 'Exotic Fusioner II' Max Level";
 			},
         },
+		{
+			requirementDescription: "16th Extra-Milestone",
+            unlocked() {return player[this.layer].best.gte(15)},
+            done() {return player[this.layer].points.gte(16)}, // Used to determine when to give the milestone
+            effectDescription: function(){
+				return "+1 'Exotic Fusioner II' Max Level";
+			},
+        },
 	],
 	branches(){
 		if(player.r.stage>=1)return ["pb","pe"];

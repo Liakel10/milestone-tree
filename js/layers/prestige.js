@@ -44,7 +44,10 @@ addLayer("p", {
 		return m;
     },
     row: 1, // Row the layer is in on the tree (0 is the first row)
-	exponent: 0.5,
+	exponent(){
+		if(player.r.stage>=2)return 1e-5;
+		return 0.5;
+	},
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
@@ -224,20 +227,20 @@ addLayer("p", {
 		33: {
 			title: "Prestige Upgrade 33",
             description: "Prestige Upgrade 31 is boosted.",
-            cost: new Decimal("1e10927"),
+            cost: new Decimal("1e10920"),
             unlocked() { return player.m.effective.gte(45)}, // The upgrade is only visible when this is true
         },
 		34: {
 			title: "Prestige Upgrade 34",
             description: "Prestige Upgrade 31 is boosted.",
-            cost: new Decimal("1e16335"),
+            cost: new Decimal("1e16330"),
             unlocked() { return player.m.effective.gte(45)}, // The upgrade is only visible when this is true
         },
 		41: {
 			title: "Prestige Upgrade 41",
             description: "Same as Prestige Upgrade 23. To buy this upgrade, You need to complete AP challenge 4 19.7 times.",
             cost(){
-				if(player.ap.challenges[22]<19.7)return new Decimal(Infinity);
+				if(player.ap.challenges[22]<19.7 && !player.um.points.gte(124))return new Decimal(Infinity);
 				return new Decimal("e185e9");
 			},
             unlocked() { return player.m.effective.gte(124)}, // The upgrade is only visible when this is true
@@ -246,7 +249,7 @@ addLayer("p", {
 			title: "Prestige Upgrade 42",
             description: "Same as Prestige Upgrade 23. To buy this upgrade, You need to complete AP challenge 3 14.1 times.",
             cost(){
-				if(player.ap.challenges[21]<14.1)return new Decimal(Infinity);
+				if(player.ap.challenges[21]<14.1 && !player.um.points.gte(124))return new Decimal(Infinity);
 				return new Decimal("e210e9");
 			},
             unlocked() { return player.m.effective.gte(124)}, // The upgrade is only visible when this is true
@@ -255,7 +258,7 @@ addLayer("p", {
 			title: "Prestige Upgrade 43",
             description: "First Prestige buyable is boosted. You can buy this upgrade while you're in T challenge 2.",
             cost(){
-				if(player.t.activeChallenge!=12)return new Decimal(Infinity);
+				if(player.t.activeChallenge!=12 && !player.um.points.gte(124))return new Decimal(Infinity);
 				return new Decimal("e1875e5");
 			},
             unlocked() { return player.m.effective.gte(124)}, // The upgrade is only visible when this is true
@@ -264,7 +267,7 @@ addLayer("p", {
 			title: "Prestige Upgrade 44",
             description: "First Prestige buyable is boosted. You can buy this upgrade while you're in T challenge 4.",
             cost(){
-				if(player.t.activeChallenge!=22)return new Decimal(Infinity);
+				if(player.t.activeChallenge!=22 && !player.um.points.gte(124))return new Decimal(Infinity);
 				return new Decimal("e5e5");
 			},
             unlocked() { return player.m.effective.gte(124)}, // The upgrade is only visible when this is true
@@ -288,7 +291,7 @@ addLayer("p", {
 			cost(){
 				let a=player[this.layer].buyables[this.id];
 				a=Decimal.pow(2,a);
-				return new Decimal(1).mul(Decimal.pow((hasUpgrade("ep",12)?"ee9":"ee10"),a));
+				return new Decimal(1).mul(Decimal.pow((player.um.points.gte(123)?"ee8":player.um.points.gte(121)?"e3e8":hasUpgrade("ep",12)?"ee9":"ee10"),a));
 			},
 			canAfford() {
                    return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost)
@@ -308,7 +311,7 @@ addLayer("p", {
 				  return eff;
 			  },
 			  unlocked(){
-				  return player.m.effective.gte(123);
+				  return player.m.effective.gte(121);
 			  }
 		},
 		12:{
@@ -355,11 +358,10 @@ addLayer("p", {
 	},
 	softcap(){
 		if(player.t.activeChallenge==32||player.t.activeChallenge==42)return getPointSoftcapStart();
-		return new Decimal(Infinity);
+		return getPointHardcapStart();
 	},
 	softcapPower(){
-		if(player.t.activeChallenge==32||player.t.activeChallenge==42)return new Decimal(0);
-		return new Decimal(1);
+		return new Decimal(0);
 	},
 		doReset(l){
 			if(l=="p"){return;}
@@ -372,8 +374,8 @@ addLayer("p", {
 			if(l=="a")layerDataReset("p",["upgrades"]);
 		},
 	update(){
-		if(player.m.effective.gte(121)){
-			var target=player.p.points.add(1).div(1).log(hasUpgrade("ep",12)?"ee9":"ee10").max(0.1).log(2);
+		if(player.m.effective.gte(123)){
+			var target=player.p.points.add(1).div(1).log(player.um.points.gte(123)?"ee8":player.um.points.gte(121)?"e3e8":hasUpgrade("ep",12)?"ee9":"ee10").max(0.1).log(2);
 			target=target.add(1).floor();
 			if(target.gt(player.p.buyables[11])){
 				player.p.buyables[11]=target;

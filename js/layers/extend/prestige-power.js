@@ -9,6 +9,7 @@ addLayer("pp", {
     }},
     color: "#652021",
     requires(){
+		if(player.r.stage>=2)return new Decimal('e7e13');
 		return new Decimal('e4e28');
 	},
     resource: "prestige power", // Name of prestige currency
@@ -26,7 +27,10 @@ addLayer("pp", {
 		return m;
     },
     row: 2, // Row the layer is in on the tree (0 is the first row)
-	exponent: 1e-28,
+	exponent(){
+		if(player.r.stage>=2)return 1e-14;
+		return 1e-28;
+	},
     hotkeys: [
         {key: "W", description: "W: Reset for prestige power", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
@@ -179,7 +183,7 @@ addLayer("pp", {
 			if(l=="pp")layerDataReset("p",["upgrades"]);
 		},
 	update(diff){
-        if (player.pp.buyables[11].gte(1)) player.pp.power = player.pp.power.add(buyableEffect('pp', 11).times(diff)).min(1.14514e50);
+        if (player.pp.buyables[11].gte(1)) player.pp.power = player.pp.power.add(buyableEffect('pp', 11).times(diff));//.min(1.14514e50);
 			
 		if(player.m.effective.gte(224)){
 			var target=player.pp.points.add(1).div(3).root(1.4).log(2);

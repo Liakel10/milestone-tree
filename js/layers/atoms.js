@@ -128,6 +128,9 @@ addLayer("a", {
 				if(player.m.effective.gte(252))exp+=0.1;
 				if(player.m.effective.gte(253))exp+=0.1;
 				if(hasUpgrade("hb",41))exp+=0.05;
+				if(hasUpgrade("hb",42))exp+=0.05;
+				if(hasUpgrade("hb",43))exp+=0.05;
+				if(hasUpgrade("hb",44))exp+=0.05;
 				let p=player.a.points.pow(exp);
 				return p;
             },

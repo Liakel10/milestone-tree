@@ -41,7 +41,10 @@ addLayer("pb", {
 	},
 	softcap:new Decimal(Infinity),
 	softcapPower:new Decimal(1),
-	base: new Decimal("1e13630"),
+	base(){
+		if(player.um.points.gte(117))return new Decimal("1e10000");
+		return new Decimal("1e13630")
+	},
 	exponent: function(x){
 		if(x===undefined)x=player.pb.points;
 		let p=new Decimal(1.1311);
@@ -270,7 +273,7 @@ addLayer("pb", {
 	update(){
 		if(player.m.effective.gte(60)&&player.ap.activeChallenge!=11){//quick autobuy
 			while(true){
-				let req=layers.pb.requires().mul(layers.pb.base.pow(Decimal.pow(player.pb.points,layers.pb.exponent())));
+				let req=layers.pb.requires().mul(layers.pb.base().pow(Decimal.pow(player.pb.points,layers.pb.exponent())));
 				if(player.p.points.gt(req))player.pb.points=player.pb.points.add(1);
 				else break;
 			}

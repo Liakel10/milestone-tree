@@ -263,7 +263,7 @@ addLayer("t", {
             cost: new Decimal(60000),
 			unlocked(){return player.m.effective.gte(111);},
 			effect(){
-				if(player.r.stage==1)return player.t.points.add(10).log10().sqrt();
+				if(player.r.stage>=1)return player.t.points.add(10).log10().sqrt();
 				let b = player.t.points.add(10).log10().sqrt().mul(1.2);
 				if(player.t.points.add(10).log10().gte(625/36))b = player.t.points.add(10).log10().mul(0.288);
 				if(hasUpgrade("t",81))b = player.t.points.add(10).log10().sqrt().mul(1.2).max(player.t.points.add(10).log10().mul(0.3)).add(0.65);
@@ -664,7 +664,7 @@ addLayer("t", {
 		},
 	},
 	hardcap(){
-		return new Decimal(2e146)//Number.MAX_VALUE)
+		return new Decimal(Number.MAX_VALUE)
 	},
 	passiveGeneration(){
 		if(player.t.activeChallenge)return 0;
@@ -837,6 +837,7 @@ addLayer("t", {
 		if(x==42)return "Super-Hardcapped Transcend Point";
 	},
 	getSpecialEffect(x){
+		if(inChallenge("mp",12))return new Decimal(1);
 		let effect=(player.t.specialPoints[x] ?? new Decimal(0)).add(1).log10().div(100).add(1);
 		return effect;
 	},

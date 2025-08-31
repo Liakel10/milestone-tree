@@ -431,24 +431,32 @@ layers.m.milestones[113-1].effectDescription=function(){
 	if(player.m.effective.gte(183))return "第6个和第27个里程碑的效果变为原来的(元里程碑数量的0.3次方)次方。";
 	return "每秒额外获得重置可以获得的超越点数的0.3%，总计0.5%。第6个和第27个里程碑的效果变为原来的(元里程碑数量的0.3次方)次方。";
 }
-layers.m.milestones[114-1].effectDescription="在超越时保留原子级挑战完成数（对每个超越挑战分别记录完成数，第7行重置时重置）。在超越挑战内自动更新超越挑战完成数。";
+layers.m.milestones[114-1].effectDescription=function(){
+	if(player.um.points.gte(114))return "在超越时保留原子级挑战完成数（对每个超越挑战分别记录完成数，第7行重置时重置）。在超越挑战内自动更新超越挑战完成数。所有原子级挑战的完成次数永远不小于10，即使你在超越或转世挑战里面。（已升级）";
+	return "在超越时保留原子级挑战完成数（对每个超越挑战分别记录完成数，第7行重置时重置）。在超越挑战内自动更新超越挑战完成数。";
+}
 layers.m.milestones[115-1].effectDescription=function(){
+	if(player.um.points.gte(115))return "解锁一个超越挑战，并且这个超越挑战奖励的效果变得更好。（已升级）";
 	if(player.m.effective.gte(183))return "解锁一个超越挑战。";
 	return "每秒额外获得重置可以获得的超越点数的0.5%，总计1%。解锁一个超越挑战。";
 }
 layers.m.milestones[116-1].effectDescription=function(){
+	if(player.um.points.gte(116))return "自动获得超级加成，并且超级加成变得更便宜。（已升级）";
 	if(player.m.effective.gte(183))return "自动获得超级加成。";
 	return "每秒额外获得重置可以获得的超越点数的1%，总计2%。自动获得超级加成。";
 }
 layers.m.milestones[117-1].effectDescription=function(){
+	if(player.um.points.gte(117))return "声望加成变得更便宜了。（已升级）";
 	if(player.m.effective.gte(183))return "声望加成变得更便宜了。";
 	return "每秒额外获得重置可以获得的超越点数的3%，总计5%。声望加成变得更便宜了。";
 }
 layers.m.milestones[118-1].effectDescription=function(){
+	if(player.um.points.gte(118))return "第四个里程碑的效果变得更好。（已升级）";
 	if(player.m.effective.gte(183))return "第四个里程碑的效果变得更好。";
 	return "每秒额外获得重置可以获得的超越点数的5%，总计10%。第四个里程碑的效果变得更好。";
 }
 layers.m.milestones[119-1].effectDescription=function(){
+	if(player.um.points.gte(119))return "超级加成变得更便宜了。（已升级）";
 	if(player.m.effective.gte(183))return "超级加成变得更便宜了。";
 	return "每秒额外获得重置可以获得的超越点数的10%，总计20%。超级加成变得更便宜了。";
 }
@@ -456,11 +464,11 @@ layers.m.milestones[120-1].effectDescription=function(){
 	if(player.m.effective.gte(183))return "原子级挑战的目标减少了，并且完成原子级挑战的次数可以不是整数。";
 	return "每秒额外获得重置可以获得的超越点数的10%，总计30%。原子级挑战的目标减少了，并且完成原子级挑战的次数可以不是整数。";
 }
-layers.m.milestones[121-1].effectDescription="自动购买第一个声望可重复购买项。";
+layers.m.milestones[121-1].effectDescription="解锁一个声望可重复购买项。";
 layers.m.milestones[122-1].effectDescription="原子级挑战4的点数减少公式被更改。原子级挑战2超过5次的完成数每次将奖励+0.015而不是+0.01。";
 layers.m.milestones[123-1].effectDescription=function(){
-	if(player.m.effective.gte(183))return "解锁一个声望可重复购买项。";
-	return "每秒额外获得重置可以获得的超越点数的15%，总计45%。解锁一个声望可重复购买项。";
+	if(player.m.effective.gte(183))return "自动购买第一个声望可重复购买项。";
+	return "每秒额外获得重置可以获得的超越点数的15%，总计45%。自动购买第一个声望可重复购买项。";
 }
 layers.m.milestones[124-1].effectDescription="解锁4个新的声望升级。";
 layers.m.milestones[125-1].effectDescription="解锁一个层级。这个层级不会被重置（除非你在进行第7行重置），同时这个层级不会重置任何东西。解锁一个超越挑战。解锁4个新的超越升级。";
@@ -713,9 +721,18 @@ layers.mm.milestones[13-1].effectDescription=layers.mm.milestones[14-1].effectDe
 	if(player.um.meta.gte(parseInt(this.id)+1))return "第6个和第27个里程碑的效果变为原来的平方。（已升级）"
 	return "第六个里程碑的效果变为原来的1.2次方。";
 }
-layers.mm.milestones[17-1].effectDescription="第六个里程碑的效果变为原来的1.7次方。";
-layers.mm.milestones[18-1].effectDescription="第27个里程碑的效果变为原来的1.8次方。";
-layers.mm.milestones[19-1].effectDescription="第27个里程碑的效果变为原来的1.9次方。";
+layers.mm.milestones[17-1].effectDescription=function(){
+	if(player.um.meta.gte(parseInt(this.id)+1))return "第6个和第27个里程碑的效果变为原来的平方。（已升级）"
+	return "第六个里程碑的效果变为原来的1.7次方。";
+}
+layers.mm.milestones[18-1].effectDescription=function(){
+	if(player.um.meta.gte(parseInt(this.id)+1))return "第6个和第27个里程碑的效果变为原来的平方。（已升级）"
+	return "第27个里程碑的效果变为原来的1.8次方。";
+}
+layers.mm.milestones[19-1].effectDescription=function(){
+	if(player.um.meta.gte(parseInt(this.id)+1))return "第6个和第27个里程碑的效果变为原来的平方。（已升级）"
+	return "第27个里程碑的效果变为原来的1.9次方。";
+}
 layers.mm.milestones[21-1].effectDescription=layers.mm.milestones[22-1].effectDescription=layers.mm.milestones[23-1].effectDescription=layers.mm.milestones[24-1].effectDescription="超越点数的获得变为原来的2倍。";
 layers.mm.milestones[26-1].effectDescription=layers.mm.milestones[27-1].effectDescription=layers.mm.milestones[28-1].effectDescription=layers.mm.milestones[29-1].effectDescription="声望能量的获得变为原来的2倍。";
 layers.mm.milestones[25-1].effectDescription=function(){

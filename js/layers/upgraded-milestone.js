@@ -9,6 +9,11 @@ addLayer("um", {
     }},
     color: "#ccbb00",
     requires(){
+		if(player.r.stage>=2){
+			if(player.em.points.gte(9))return new Decimal(1);
+			if(player.em.points.gte(5))return new Decimal("e3e12");
+			return new Decimal("ee13");
+		}
 		if(player.r.stage>=1){
 			if(player.um.points.gte(99)&&player.r.challenges[11]<1)return new Decimal(Infinity);
 			if(player.em.points.gte(9))return new Decimal(1);
@@ -32,6 +37,13 @@ addLayer("um", {
     },
     row: 3, // Row the layer is in on the tree (0 is the first row)
     base(){
+		if(player.r.stage>=2){
+			if(player.um.points.gte(37))return new Decimal("ee7");
+			if(player.um.points.gte(20))return new Decimal("ee10").pow(Decimal.pow(0.1,player.um.points.sub(22).div(5)));
+			if(player.em.points.gte(9))return new Decimal("ee11");
+			if(player.em.points.gte(5))return new Decimal("e5e11");
+			return new Decimal("ee12");
+		}
 		if(player.r.stage>=1){
 			if(player.um.points.gte(99))return new Decimal("ee20");
 			if(player.um.points.gte(95))return new Decimal("e2e17");
@@ -57,10 +69,13 @@ addLayer("um", {
 	exponent: function(x){
 		if(x===undefined)x=player.um.points;
 		var p=new Decimal(1.9);
-		if(player.r.stage>=1){
+		if(player.r.stage>=2){
+			p=new Decimal(1.25).add(x.pow(1.5).min(x.mul(2.5)).div(25));
+		}else if(player.r.stage>=1){
 			p=new Decimal(1.5);
 			let scaling=x.sub(10).div(20);
 			if(x.gte(99))scaling=x.div(14);
+			if(x.gte(119))scaling=x.div(Decimal.sub(20,x.div(30).mul(2)).min(1));
 			p=p.add(scaling);
 		}else if(x.gte(24)){
 			let scaling=x.sub(23).div(35);

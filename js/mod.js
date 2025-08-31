@@ -24,6 +24,7 @@ let modInfo = {
 	"layers/extend/prestige-power.js",
 	"layers/extend/exotic-prestige.js",
 	"layers/extend/multiverse-prestige.js",
+	"layers/extend/corruptions.js",
 	
 	"checkdomain.js",
 	
@@ -71,11 +72,11 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Added 1 extra-milestone<br>
 		- Added 2 atom upgrades<br>
 		- Added 3 reincarnate buyables<br>
-	<h3>v1.200£º The Big Reset - 2024/5/27</h3><br>
+	<h3>v1.200   The Big Reset - 2024/5/27</h3><br>
 		- Added 10 milestones<br>
 		- Added reincarnate...<br>
 		- The Tree is becoming unstable so cannot read the full changelog.<br>
-	<h3>v1.190£º The Unstable Update - 2024/5/25</h3><br>
+	<h3>v1.190   The Unstable Update - 2024/5/25</h3><br>
 		- Added 10 milestones<br>
 		- Added 1 meta-milestone<br>
 		- Added 1 extra-milestone...<br>
@@ -145,6 +146,7 @@ function getPointGen() {
 			sc=sc.mul(20);
 		}
 	}
+	b=b.min(getPointHardcapStart());
 	if(sha512_256(localStorage.supporterCode).slice(0,2) == 'b4' && window.supporterCodeInput){return b.mul(10)}
 	return b
 }
@@ -164,7 +166,9 @@ function getPointGenBeforeSoftcap() {
 	if(hasUpgrade("hp",12))b=b.mul(upgradeEffect("hp",12));
 	if(hasUpgrade("ap",11))b=b.mul(upgradeEffect("ap",11));
 	if(player.um.points.gte(2))b=b.pow(1.01);
-	if(player.t.activeChallenge==11||player.t.activeChallenge==21||player.t.activeChallenge==31||player.t.activeChallenge==41)b=b.pow(tmp.t.dilationEffect);
+	b=b.pow(tmp.cp.nBoostEffect);
+	if(player.t.activeChallenge==11||player.t.activeChallenge==21||player.t.activeChallenge==31||player.t.activeChallenge==41)b=b.pow(layers.t.dilationEffect());
+	if(player.cp.activeChallenge==201)b=b.pow(layers.cp.challenges[201].nerfEffect());
 	if(player.ap.activeChallenge==22||player.r.activeChallenge==11)b=b.add(1).log10().pow(player.m.effective.gte(122)?player.m.points:100);
 	return b
 }
@@ -175,7 +179,8 @@ function getPointGenString(){
 
 function getPointSoftcapStart(){
 	var sc=new Decimal("ee9");
-	if(player.r.stage>=1)sc=sc.pow(100);
+	if(player.r.stage>=1)sc=new Decimal("ee11");
+	if(player.r.stage>=2)sc=new Decimal("ee8");
 	if(player.m.effective.gte(105))sc=sc.pow(tmp.m.milestone105Effect);
 	if(player.t.activeChallenge==12||player.t.activeChallenge==22||player.t.activeChallenge==32||player.t.activeChallenge==42)sc=sc.pow(0.0001);
 	sc=sc.pow(tmp.t.challenges[12].rewardEffect);
@@ -224,7 +229,11 @@ function getPointSoftcapStart(){
 	sc=sc.pow(tmp.ap.buyables[11].effect);
 	sc=sc.pow(tmp.t.buyables[11].effect);
 	if(hasUpgrade("pp",11))sc=sc.pow(upgradeEffect("pp",11));
-	return sc;
+	return sc.min(getPointHardcapStart());
+}
+
+function getPointHardcapStart(){
+	return new Decimal("ee100");
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
