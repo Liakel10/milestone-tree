@@ -21,6 +21,10 @@ displayThings = [
 ]
 
 changelog = `<h1>更新日志：</h1><br>
+	<h3>v1.263 - 2024/6/8</h3><br>
+		- 增加了18个里程碑<br>
+		- 增加了1个转世挑战<br>
+		- Added a Multiverse Prestige Challenge<br>
 	<h3>v1.245: 平行多宇宙 - 2024/6/5</h3><br>
 		- 增加了18个里程碑<br>
 		- Ported Exotic Prestige from Seder's NG+<br>
@@ -666,6 +670,12 @@ layers.m.milestones[232-1].effectDescription="第105个里程碑的效果变为�
 
 layers.m.milestones[234-1].effectDescription="解锁转世升级。";
 layers.m.milestones[235-1].effectDescription="第105个里程碑的效果变为原来的1.01次方。";
+layers.m.milestones[236-1].effectDescription="原子级挑战5的目标减少了。";
+layers.m.milestones[237-1].effectDescription="原子级挑战6的目标减少了。";
+layers.m.milestones[238-1].effectDescription="第105个里程碑的效果变为原来的1.01次方。";
+layers.m.milestones[239-1].effectDescription="第105个里程碑的效果变为原来的1.01次方。";
+
+
 
 
 
