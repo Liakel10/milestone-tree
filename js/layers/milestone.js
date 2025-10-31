@@ -16,7 +16,7 @@ var MILESTONES=[
             done() {return player[this.layer].points.gte(2)}, // Used to determine when to give the milestone
             effectDescription:  function(){
 				if(player.um.points.gte(2))return "3x, ^1.01 First Milestone's effect. (Upgraded)";
-				return "Triple the first Milestone's effect.";
+				return "X10 the first Milestone's effect.";
 			},
         },
 		{
@@ -2723,4 +2723,5 @@ addLayer("m", {
 			player.m.effective=player.r.buyables[11].min(player.m.points).max(0);
 		}
 	},
+
 })
